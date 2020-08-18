@@ -1,0 +1,94 @@
+Changes to the Python twain Module
+
+Release 1.0.4  (June 2010)
+
+o   Fix contributed by anonymous visitor. Fix for strage values being 
+    displayed for 16bit values.
+
+o   Merged in support for twain up to version 2.1 as per patch from 
+    Russ Gibson.
+
+Release 1.0.3  (May 2007)
+
+o   Use the new (Python 2.3) API for handling the Global Interpreter Lock
+    (GIL). This seems to be more stable with pyGTK.
+
+o   Split the demonstratino files into a common base class and classes
+    for each windows toolkit.
+
+Release 1.0.2  (May 2007)
+
+o   Fix to release global handles where errors have occurred processing
+    the same.
+
+o   Added an example for pyGTK
+
+o   Brought the wxPython code up to date
+
+o   Added acquire by file to the samples. Acquire natively does not work
+    for all sources. 
+
+o   In twexplore support Acquire By File where the file name cannot be
+    set.
+
+Release 1.0.1  (April 2005)
+
+o       Kurt Anderson contributed files to build the module using the
+        free Microsoft C++ compilers. These were used to build the 
+	Python 2.4 release.
+
+Release 1.0, Beta 2  (May 2002).
+
+o	Left trace statements in the code. These are conditionally 
+	compiled out using the constant TRACE.
+
+o	Disabled the checks for buffer overruns. These are conditionally
+	compiled out using the constant ENABLE_BUFFER_CHECK.
+
+o	Included the code for building a Python 2.1 version in the 
+	standard source.
+
+o	Support Python threading. Where the module is invoked from 
+	the Python interpreter, the interpreter lock will be released
+	during blocking code. This introduces a possible reentrancy
+	problem. It is the responsibility of the application programmer
+	go guard against this reetrancy.
+
+o	Support the conversion of a larger set of windows bitmap
+	files to the XBM format.
+
+o	Removed a redundant function to process windows messages by
+	a per source manager object ( SourceManager_ProcessEventImpl). The
+	software can only connect to a single source manager.
+
+o	Created a new function called Version(), which will return
+	a version string for the module. In this release it returns
+	"1.0b2".
+
+o	Created destroy() methods on the SourceManager and Source objects.
+	This allows the application to force the disconnection, without
+	relying on the destructor.
+
+o	Fixed an error in the sequence of callbacks to the Python code.
+	The callbacks could cause a segment violation, where the object
+	performing the callback is destroyed during the callback.
+
+o	Where calls to the dll entry point require NULL values, these
+	are passed through. In beta 1, the module used a live pointer to
+	allocated memory, so that it could check for corruption.
+
+o	Fixed the document string on DIBToXBMFile function.
+
+o	Changed the simple_wx.py demo, to provide a scrolling window, which
+	displays a better bitmap. It no longer shows the scanner user interface.
+
+o	Changed the simple_tk.py to be slightly larger, and to request
+	a black & white fixed size image. It no longer shows the scanner
+	user interface.
+
+o	The twexplore is now compiled with -w option (thanks Marcus Gritsch).
+	The twexplore has more visible clues about the transfer file. It makes
+	sure that the image window is on top.
+
+o	The new methods are included in the documentation. Some errors in the
+	index page are fixed. Two entries have been made in the faq.

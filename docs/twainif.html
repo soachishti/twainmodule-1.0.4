@@ -1,0 +1,327 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>TWAIN Module API</title>
+</head>
+<body>
+
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="lowlevel.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="sm.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Reference</b></td>
+</tr></table>
+<hr>
+
+<h1>TWAIN Module API</h1>
+
+<h2>Functions</h2>
+
+<h3>twain.DIBToBMFile()</h3>
+
+This method is used to convert a DIB (Device Independent Bitmap) to a windows 
+bitmap file format. The BMP file is either returned as a string, or written 
+to a file with the name given in the second argument.<p>
+
+<b>Parameters</b><br><br>
+<table summary="DIBToBMFile Function Parameters" width=600 border=1>
+<tr>
+<td><b>Name</b></td>
+<td><b>Description</b></td>
+<td><b>Default Value</b></td>
+</tr><tr>
+<td>hBitmap</td>
+<td>A global handle as returned from the Source.XferImageNatively() function.</td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>FileName</td>
+<td>A string supplying a file name.</td>
+<td>If not passed, the BMP file will be returned as a string.</td>
+</tr>
+</table><p>
+
+This method returns a single value, which is either the BMP file as a string,
+or None. On failure it raises the following exceptions:
+<table summary="SourceManager constructor exceptions"  width=600 border=1>
+<tr>
+<td><b>Exception</b></td><td><b>Meaning</b></td
+</tr>
+</table><p>
+
+<h3>twain.DIBToXBMFile()</h3>
+
+This method is used to convert a DIB (Device Independent Bitmap) to an X-Windows 
+bitmap file format. The XBM file is either returned as a string, or written 
+to a file with the name given in the third argument.<p>
+
+<b>Parameters</b><br><br>
+<table summary="DIBToXBMFile Function Parameters"  width=600 border=1>
+<tr>
+<td><b>Name</b></td>
+<td><b>Description</b></td>
+<td><b>Default Value</b></td>
+</tr><tr>
+<td>hBitmap</td>
+<td>A global handle as returned from the Source.XferImageNatively() function.</td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>Prefix</td>
+<td>A string supplying the prefix (XBM id). This is normally the file name
+excluding the .xbm suffix.</td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>FileName</td>
+<td>A string supplying a file name.</td>
+<td>If not passed, the XBM file will be returned as a string.</td>
+</tr>
+</table><p>
+
+This method returns a single value, which is either the XBM file as a string,
+or None. On failure it raises the following exceptions:
+<table summary="SourceManager constructor exceptions"  width=600 border=1>
+<tr>
+<td><b>Exception</b></td><td><b>Meaning</b></td
+</tr>
+</table><p>
+
+<h3>twain.GlobalHandleAllocate()</h3>
+
+This method provides the application with access to the Windows Global Heap. It
+allocates a handler of a specific size. <p>
+
+<b>Parameters</b><br><br>
+<table summary="GlobalHandleAllocate Function Parameters"  width=600 border=1>
+<tr>
+<td><b>Name</b></td>
+<td><b>Description</b></td>
+<td><b>Default Value</b></td>
+</tr><tr>
+<td>lSize</td>
+<td>The size of the memory buffer required.</td>
+<td><b>mandatory</b></td>
+</tr>
+</table><p>
+
+This method allocates the required memory and returns a handle to the memory.
+If the function fails, it returns None.<p>
+
+<h3>twain.GlobalHandleGetBytes()</h3>
+
+This method provides the application with access to the Windows Global Heap. It
+returns a specified number of bytes from the Global Heap location, identified
+by the handle. <p>
+
+<b>Parameters</b><br><br>
+<table summary="GlobalHandleGetBytes Function Parameters"  width=600 border=1>
+<tr>
+<td><b>Name</b></td>
+<td><b>Description</b></td>
+<td><b>Default Value</b></td>
+</tr><tr>
+<td>Handle</td>
+<td>A handle returned by GlobalHandleAllocate(), or XferImageNatively().</td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>Offset</td>
+<td>An integer giving the offset in the buffer at which to begin the read.</td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>Length</td>
+<td>The number of bytes to read from the buffer.</td>
+<td><b>mandatory</b></td>
+</tr>
+</table><p>
+
+This method returns a python string, which contains the identified data.<p>
+
+<h3>twain.GlobalHandlePutBytes()</h3>
+
+This method provides the application with access to the Windows Global Heap. It
+writes a python string to Global Heap location, identified
+by the handle. <p>
+
+<b>Parameters</b><br><br>
+<table summary="GlobalHandlePutBytes Function Parameters"  width=600 border=1>
+<tr>
+<td><b>Name</b></td>
+<td><b>Description</b></td>
+<td><b>Default Value</b></td>
+</tr><tr>
+<td>Handle</td>
+<td>A handle returned by GlobalHandleAllocate(), or XferImageNatively().</td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>Offset</td>
+<td>An integer giving the offset in the buffer at which to begin the read.</td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>Length</td>
+<td>The number of bytes to read from the buffer.</td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>Data</td>
+<td>A Python string containing the data to be written.</td>
+<td><b>mandatory</b></td>
+</tr>
+</table><p>
+
+This method does not return any values.<p>
+
+<h3>twain.GlobalHandleFree()</h3>
+
+This method provides the application with access to the Windows Global Heap. It
+releases the Global Heap location, identified by the handle. <p>
+
+<b>Parameters</b><br><br>
+<table summary="GlobalHandleFree Function Parameters"  width=600 border=1>
+<tr>
+<td><b>Name</b></td>
+<td><b>Description</b></td>
+<td><b>Default Value</b></td>
+</tr><tr>
+<td>Handle</td>
+<td>A handle returned by GlobalHandleAllocate(), or XferImageNatively().</td>
+<td><b>mandatory</b></td>
+</tr>
+<table><p>
+
+<br>
+
+<h3>twain.Version()</h3>
+
+Returns the version identifier for the Python TWAIN interface. <p>
+
+
+<h2>Variables</h2>
+
+A large number of constants are defined in the TWAIN module. These are used with
+various API calls. They are broken down by their prefixes, as follows:
+
+<table summary="Variables in the module" width=600 border=1>
+<td><b>Prefix</b></td>
+<td><b>Purpose</b></td>
+</tr>
+<tr><td>ACAP_
+</td><td>Audio Capabilities</td></tr>
+<tr><td>CAP_
+</td><td>General Capabilities</td></tr>
+<tr><td>DAT_
+</td><td>Describe the types of data structures</td></tr>
+<tr><td>DG_
+</td><td>Identify Data Groups (i.e. images/audio)</td></tr>
+<tr><td>ICAP_
+</td><td>Identify Image Capabilities</td></tr>
+<tr><td>MSG_
+</td><td>Message Identifiers for communcations with Source</td></tr>
+<tr><td>TWAF_
+</td><td>Audio File Formats</td></tr>
+<tr><td>TWAL_
+</td><td>Alarm Codes</td></tr>
+<tr><td>TWBCOR_
+</td><td>Barcode Rotation</td></tr>
+<tr><td>TWBD_
+</td><td>Barcode Search Mode</td></tr>
+<tr><td>TWBO_
+</td><td>Bit-order</td></tr>
+<tr><td>TWBR_
+</td><td>Bit-depth Reduction</td></tr>
+<tr><td>TWBT_
+</td><td>Barcode Type</td></tr>
+<tr><td>TWCB_
+</td><td>Clear Buffesr</td></tr>
+<tr><td>TWCC_
+</td><td>Condition Codes (errors)</td></tr>
+<tr><td>TWCP_
+</td><td>Compression Options</td></tr>
+<tr><td>TWCY_
+</td><td>Country Constants</td></tr>
+<tr><td>TWDE_
+</td><td>Device Events</td></tr>
+<tr><td>TWDSK_
+</td><td>de-skew</td></tr>
+<tr><td>TWDX_
+</td><td>Duplication Options</td></tr>
+<tr><td>TWEI_
+</td><td>Extended Image Information</td></tr>
+<tr><td>TWEJ_
+</td><td>Not defined in specification* (appear to relate to ejection of 
+originals)</td></tr>
+<tr><td>TWFA_
+</td><td>Feeded Alignment</td></tr>
+<tr><td>TWFF_
+</td><td>File Formats (Image)</td></tr>
+<tr><td>TWFL_
+</td><td>Flash Used</td></tr>
+<tr><td>TWFO_
+</td><td>Feeder Order</td></tr>
+<tr><td>TWFR_
+</td><td>Flip Rotation</td></tr>
+<tr><td>TWFS_
+</td><td>File System</td></tr>
+<tr><td>TWFT_
+</td><td>Filter Type</td></tr>
+<tr><td>TWFY_
+</td><td>File System - File Type</td></tr>
+<tr><td>TWIF_
+</td><td>Image Filter</td></tr>
+<tr><td>TWJC_
+</td><td>Job Control</td></tr>
+<tr><td>TWLG_
+</td><td>Language Ids</td></tr>
+<tr><td>TWLP_
+</td><td>Light Path</td></tr>
+<tr><td>TWLS_
+</td><td>Light Source</td></tr>
+<tr><td>TWMF_
+</td><td>Memory Flags</td></tr>
+<tr><td>TWNF_
+</td><td>Noise Filter</td></tr>
+<tr><td>TWON_
+</td><td>Protocol Version Identifiers</td></tr>
+<tr><td>TWOR_
+</td><td>Orientation</td></tr>
+<tr><td>TWOV_
+</td><td>Overscan</td></tr>
+<tr><td>TWPA_
+</td><td>Colour Palette types</td></tr>
+<tr><td>TWPCH_
+</td><td>Extend Image (TWEI) Patch Codes</td></tr>
+<tr><td>TWPC_
+</td><td>Planar/Chunky selection</td></tr>
+<tr><td>TWPF_
+</td><td>Pixel Flavour</td></tr>
+<tr><td>TWPM_
+</td><td>Printer Mode</td></tr>
+<tr><td>TWPR_
+</td><td>Printer Codes</td></tr>
+<tr><td>TWPS_
+</td><td>Power Supply</td></tr>
+<tr><td>TWPT_
+</td><td>Pixel Type</td></tr>
+<tr><td>TWQC_
+</td><td>Query Capability Options</td></tr>
+<tr><td>TWRC_
+</td><td>Return Codes</td></tr>
+<tr><td>TWSS_
+</td><td>Supported Sizes</td></tr>
+<tr><td>TWSX_
+</td><td>Transfer Mechanism</td></tr>
+<tr><td>TWTY_
+</td><td>TWAIN Primitive Types</td></tr>
+<tr><td>TWUN_
+</td><td>Image Units</td></tr>
+</table>
+
+<hr>
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="lowlevel.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="sm.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Reference</b></td>
+</tr></table>
+ 
+</body>
+</html>
+
+

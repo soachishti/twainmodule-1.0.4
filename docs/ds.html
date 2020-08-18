@@ -1,0 +1,385 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>Source Object</title>
+</head>
+<body>
+
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="sm.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="exception.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Reference</b></td>
+</tr></table>
+<hr>
+
+<h1>Source Object</h1>
+
+The Source Object is used for all communcations with the data source. <p>
+
+<h2>Constructor</h2>
+
+<b>twain.SourceManager.OpenSource(Name)</b><br><br>
+
+The Source object is only created by a factory on the SourceManger object.
+The OpenSource method will create a connection to the data source.<p>
+
+<table summary="Source Constructor Parameters" width=600 border=1>
+<tr>
+<td><b>Name</b></td>
+<td><b>Description</b></td>
+<td><b>Default Value</b></td>
+</tr><tr>
+<td>Name</td>
+<td>The name of the data source.</td>
+<td>Will present a dialog if this is not passed</td>
+</table>
+<p>
+
+This method will either return an object of type Source, or it will return
+None (which indicates that the user cancelled the open).<p>
+
+On failure it raises the following exceptions:
+<table summary="SourceManager constructor exceptions"  width=600 border=1>
+<tr>
+<td><b>Exception</b></td><td><b>Meaning</b></td
+</tr>
+<tr>
+<td>excDSOpenFailed</td><td>The attempt to open the connect to the source
+failed. The name of the source is returned in the exc_value.</td
+</tr>
+<tr>
+</table><p>
+
+<h2>Methods</h2>
+
+<b>Source.DSM_Entry(datagroup, dataitem, messageid, message)</b><br><br>
+
+This method is used to make a call directly to the TWAIN Source. You can 
+use it to implement any calls which have not been implemented in the
+DLL. Note that there is a separate method in the SourceManager object for
+sending messages to the Source Manager.<p>
+
+Be aware that there is a risk associated with using this method. Passing 
+incorrect data may result in memory corruption.<p>
+
+<table summary="DMS_Entry Function Parameters" width=600 border=1>
+<tr>
+<td><b>Name</b></td>
+<td><b>Description</b></td>
+<td><b>Default Value</b></td>
+</tr><tr>
+<td>datagroup</td>
+<td>Data Group identifier. One of the DG_* constants. </td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>dataitemid</td>
+<td>Data Item Type identifier. One of the DAT_* constants. </td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>messageid</td>
+<td>The command to be performed. One of the MSG_* constants. </td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>message</td>
+<td>The data for the operation. This should be built up using the
+struct python module. In many of the operations, the result is returned
+in this buffer.</td>
+<td><b>mandatory</b></td>
+</tr><table><p>
+
+This method returns the TWAIN Source Manager return value as an integer.
+This value is one of the TWRC_* values.<p>
+
+<b>Source.RequestAcquire(ShowUI, ShowModal)</b><br><br>
+
+This method is ask the twain source to acquire an image.  <p>
+
+<table summary="RequestAcquire Function Parameters" width=600 border=1>
+<tr>
+<td><b>Name</b></td>
+<td><b>Description</b></td>
+<td><b>Default Value</b></td>
+</tr><tr>
+<td>ShowUI</td>
+<td>Boolean which tells Data Source to display its User Interface</td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>ShowUI</td>
+<td>Boolean which tells Data Source that it's display should be modal/td>
+<td><b>mandatory</b></td>
+</tr><table><p>
+
+The method has no return value. On failure it will return one of the 
+excTWCC exceptions.<p>
+
+<b>Source.GetCapability(CapabilityCode)</b><br><br>
+
+This method is used to return the configuration for a capability.
+The configuration information may be a single value (e.g. CAP_FEEDERENABLED), or
+it may be a current value, a default value and a list of options. Use
+the twexplore program to see the capabilities of your device.<p>
+
+<table summary="GetCapability Function Parameters" width=600 border=1>
+<tr>
+<td><b>Name</b></td>
+<td><b>Description</b></td>
+<td><b>Default Value</b></td>
+</tr><tr>
+<td>CapabilityCode</td>
+<td>One of the CAP_* (Generic Capabilities), ICAP_ (Image Capabilities),
+ACAP_* (Audio Capabilities) constants, representing the capability you 
+are interested in.</td>
+<td><b>mandatory</b></td>
+</tr><table><p>
+
+The method returns the configuration for a capability. See the section on capabilities
+for detailed information on these return values.<p>
+
+<b>Source.GetCapabilityCurrent(CapabilityCode)</b><br><br>
+
+This method is used to return the current value for a capability.
+The current value is normally a single value. Use
+the twexplore program to see the capabilities of your device.<p>
+
+<table summary="GetCapabilityCurrent Function Parameters" width=600 border=1>
+<tr>
+<td><b>Name</b></td>
+<td><b>Description</b></td>
+<td><b>Default Value</b></td>
+</tr><tr>
+<td>CapabilityCode</td>
+<td>One of the CAP_* (Generic Capabilities), ICAP_ (Image Capabilities),
+ACAP_* (Audio Capabilities) constants, representing the capability you 
+are interested in.</td>
+<td><b>mandatory</b></td>
+</tr><table><p>
+
+The method returns the current value for capability. See the section on capabilities
+for detailed information on these return values.<p>
+
+<b>Source.GetCapabilityDefault(CapabilityCode)</b><br><br>
+
+This method is used to return the default value for a capability.
+The default value is normally a single value. Use
+the twexplore program to see the capabilities of your device.<p>
+
+<table summary="GetCapabilityDefault Function Parameters" width=600 border=1>
+<tr>
+<td><b>Name</b></td>
+<td><b>Description</b></td>
+<td><b>Default Value</b></td>
+</tr><tr>
+<td>CapabilityCode</td>
+<td>One of the CAP_* (Generic Capabilities), ICAP_ (Image Capabilities),
+ACAP_* (Audio Capabilities) constants, representing the capability you 
+are interested in.</td>
+<td><b>mandatory</b></td>
+</tr><table><p>
+
+The method returns the default value for capability. See the section on capabilities
+for detailed information on these return values.<p>
+
+<b>Source.SetCapability(CapabilityCode)</b><br><br>
+
+This method is used to set the value for a capability.<p>
+
+<table summary="SetCapability Function Parameters" width=600 border=1>
+<tr>
+<td><b>Name</b></td>
+<td><b>Description</b></td>
+<td><b>Default Value</b></td>
+</tr><tr>
+<td>CapabilityCode</td>
+<td>One of the CAP_* (Generic Capabilities), ICAP_ (Image Capabilities),
+ACAP_* (Audio Capabilities) constants, representing the capability you 
+are interested in.</td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>Type</td>
+<td>One of the TWTY_* constants. This value is returned by the GetCapability*()
+methods.</td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>Value</td>
+<td>The value to which the capability is to be set. This value must be
+a single value at the moment. Its type depends on what the capability
+will support. Use the GetCapabilityCurrent() method to find the best
+type for the capability.</td>
+<td><b>mandatory</b></td>
+</tr><table><p>
+
+There are no values returned.<p>
+
+<b>Source.ResetCapability(CapabilityCode)</b><br><br>
+
+This method is used to reset the value ofr a capability to its default
+value.<p>
+
+<table summary="ResetCapability Function Parameters" width=600 border=1>
+<tr>
+<td><b>Name</b></td>
+<td><b>Description</b></td>
+<td><b>Default Value</b></td>
+</tr><tr>
+<td>CapabilityCode</td>
+<td>One of the CAP_* (Generic Capabilities), ICAP_ (Image Capabilities),
+ACAP_* (Audio Capabilities) constants, representing the capability you 
+are interested in.</td>
+<td><b>mandatory</b></td>
+</tr><table><p>
+
+There are no values returned.<p>
+
+<b>Source.GetIdentity()</b><br><br>
+
+Returns a dictionary containing the configuration information for the 
+Data Source.<p>
+
+<b>Source.GetSourceName()</b><br><br>
+
+Returns the name of the source. This value can be used for re-connecting
+to the source at a later time.<p>
+
+<b>Source.GetImageInfo()</b><br><br>
+
+This method returns information about the image. It can only be called
+in state 6, i.e. after the image is available in the Data Source. There is
+no matching 'Set' method for this call. These items have to be set using the
+Capabilities functionality.<p>
+
+The following items are returned in a dictionary:<br>
+		XResolution, YResolution, ImageWidth, ImageLength, SamplesPerPixel,
+		BitsPerSample, BitsPerPixel, Planar, PixelType, Compression<p>
+
+<b>Source.GetImageLayout()</b><br><br>
+
+This method returns the layout about the image. It can only be called
+in state 4 or 6, i.e. before or after the image is available in the Data 
+Source.<p>
+
+The values are returned as a tuple as follows:<br>
+		((left, top, right, bottom) document_number, page_number, frame_number)<p>
+
+<b>Source.SetImageLayout()</b><br><br>
+
+This method sets the layout about the image. In particular, it is used to select
+the image, when the Source user interface is not displayed. It can only be called
+in state 4, i.e. before the image is available in the Data Source.<p>
+
+Note, that the actual image may differ from the one you requested. Check the
+Layout again after the image is available.<p>
+		
+<table summary="SetImageLayout Function Parameters" width=600 border=1>
+<tr>
+<td><b>Name</b></td>
+<td><b>Description</b></td>
+<td><b>Default Value</b></td>
+</tr><tr>
+<td>Frame</td>
+<td>The frame of the image. This is a tuple of four floats, representing
+the (left, top, right, bottom) positions. The units are in the current
+units for the source.</td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>DocumentNumber</td>
+<td>Integer Document Number.</td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>PageNumber</td>
+<td>Integer Page Number.</td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>FrameNumber</td>
+<td>Integer Frame Number</td>
+<td><b>mandatory</b></td>
+</tr><table><p>
+
+<b>Source.XferImageNatively()</b><br><br>
+
+This method is used to retrieve the image from the data source.
+The 'native' form of image transfer, is a windows specific mechanism
+where the data is placed in the Global Heap and a handle is passed back
+to our application.<p>
+
+This method returns two values, a Global Heap handle and a count of the
+number of items pending with the source. The data can be accessed using the
+GlobalHandle* methods in the twain module. The handle must be freed by your 
+application using the twain.GlobalHandleFree() method. Otherwise it will
+remain unavailable to windows after your process exits.<p>
+		
+<b>Source.XferImageByFile()</b><br><br>
+
+This method is used to retrieve the image from the data source.
+This file name and format should have been previously defined by
+the SetXferFileName() method.<p>
+
+<b>Source.GetXferFileName()</b><br><br>
+
+This call returns the name of the transfer file, which is currently configured
+in the data source. The call returns two values, the file name and the
+file format, which is one of the TWFF_* constants.<p>
+
+<b>Source.SetXferFileName()</b><br><br>
+
+This call sets the name of the transfer file. If there is no path, the
+file should be created in the application current directory.
+, which is currently configured
+in the data source. The call returns two values, the file name and the
+file format, which is one of the TWFF_* constants.<p>
+
+<table summary="SetXferFileName Function Parameters" width=600 border=1>
+<tr>
+<td><b>Name</b></td>
+<td><b>Description</b></td>
+<td><b>Default Value</b></td>
+</tr><tr>
+<td>Filename</td>
+<td>The name of the file. f there is no path, the
+file should be created in the application current directory.</td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>File Type</td>
+<td>An integer describing the file format. One of the TWFF_* constants.</td>
+<td>Current value is unchanged.</td>
+</tr></table><p>
+
+<b>Source.CancelOnePendingXfer()</b><br><br>
+
+This method is used to cancel the current transfer. It may only be invoked
+when an image is available in the data source. The number of pending transfers
+is returned.<p>
+
+<b>Source.CancelAllPendingXfers()</b><br><br>
+
+This method is used to cancel all transfer pending in the source. It may only 
+be invoked when an image is available in the data source. <p>
+
+<b>Source.HideUI()</b><br><br>
+
+This method is used to hide the user interface, which may have been displayed
+previously by a call to Source.RequestAquire(). This call may not be made
+while there are pending transfers in the data source. If there are pending
+images, call Source.CancelAllPendingXfers() first.<p>
+
+<b>Source.destroy()</b><br><br>
+
+This method is used disconnect the Source object from the TWAIN source.
+This method is called automatically from the destructor. It is provided
+as a separate method to allow finer grained control over the disconnect
+process.<p>
+
+
+<hr>
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="sm.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="exception.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Reference</b></td>
+</tr></table>
+
+</body>
+</html>
+
+

@@ -1,0 +1,39 @@
+Installing twainmodule
+======================
+
+(Build instructions courtesy of Kurt Anderson.)
+
+
+1. If you did not download the binary distribution, build the module
+   from source following the direction below.
+
+2. Run: python setup.py install
+
+
+
+Building from source
+--------------------
+1. Go to http://www.vrplumber.com/programming/mstoolkit/, and make sure
+   you have the 5 packages listed in "Getting the Packages" installed
+   on your computer.
+
+2. Perform the changes described in 'Disutil Modifications'.
+
+3. Go to http://www.twain.org/ and download the TWAIN SDK.
+	(or just download 'TWAIN.H')
+
+4. Edit 'vcvars.bat' included in this distribution, and modify the
+   variables listed below to make them correct for your system.
+	a. VC_DIR - Path to the MS Visual C++ Toolkit
+	b. SDK_DIR - Path to the MS Platform SDK
+	c. DOTNET_DIR - Path to the MS Visual Studio .NET SDK
+	d. TWAIN_DIR - Path to the TWAIN.H file from step 3.
+	e. PYTHON_DIR - Path to the Python 2.4 installation.
+
+5. Start the Visual C++ command prompt link.
+
+6. Run 'vcvars.bat'.
+
+7. Run: python setup.py build
+
+8. Run: python setup.py install

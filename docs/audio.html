@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>Using Audio Data Sources</title>
+</head>
+<body>
+
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="transfer.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="lowlevel.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Guide</b></td>
+</tr></table>
+<hr>
+
+<h1>Using AUDIO Data Sources</h1>
+
+The TWAIN API and the python twainmodule provide some support for AUDIO data.
+This section is about transferring audio data from your data Source. Only 
+file based transfer is supported.<p>
+
+When creating the SourceManager object, you have to indicate that you 
+are interested in Audio Data. Otherwise it will not let you connect to
+an Audio data source. The command becomes:<p>
+
+<pre>
+   self.SM=twain.SourceManager(0L, SupportedGroups = twain.DG_CONTROL | twain.DG_AUDIO)
+</pre>
+<p>
+
+The transfer file name is defined using the SetXferFileName() method of the
+source object. The file type can be set using the TWAF_ constants.<p>
+
+<pre>
+   self.SS.SetXferFileFormat("sound.wav", twain.TWAF_WAV)
+</pre>
+
+The file is transferred using the method XferAudioByFile(). This routine
+returns the count of outstanding transfers.<p>
+<pre>
+   iPending = self.SS.XferAudioByFile()
+</pre>
+
+Note: This functionality has not been tested, because I do not have an AUDIO 
+source. If you do successfully use it, please forward a demonstration script
+for inclusion in the demo directory.<p>
+
+<hr>
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="transfer.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="lowlevel.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Guide</b></td>
+</tr></table>
+
+</body>
+</html>
+
+

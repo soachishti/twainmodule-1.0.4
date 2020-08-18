@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>FAQ</title>
+</head>
+<body>
+
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="twexplore.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td align="center" width="100%" bgcolor=#99ccff><b>Miscellaneous</b></td>
+</tr></table>
+<hr>
+
+<h1>FAQ</h1>
+
+<h3>1. Demonstration Programs</h3>
+
+1.1. twexplore.py displays a grey image instead of the image scanned.
+<p>
+
+<h3>2. General</h3>
+
+2.1  Why does my window go into the background after a Scan
+<p>
+
+<h2>1. Demonstration Programs</h2>
+
+<b>1.1. twexplore.py displays a grey image instead of the image scanned.</b><p>
+
+This problem occurs when the image scanned is very large. If you use the
+defaults to scan an A4 page on my HP scanner, you get a 14meg image. This
+image does not get displayed by the test program, but it can be viewed using
+paint-brush.<p>
+
+You can reduce the size of the data scanned by modifying the size of the
+data selected, the pixel type or the resolution. Frame selection is available
+as a button on the 'Acquire' screen. Pixel type and resolution are modified
+via attributes (i.e. select ICAP_PIXELTYPE or ICAP_XRESOLUTION with double-click
+and modify.<p>
+
+<h2>2. General</h2>
+
+<b>2.1. Why does my window go into the background after a Scan.</b><p>
+
+When an image is scanned, the scanner user interface is displayed (or at
+least takes some control of the message queue). This is a separate 
+process from your application. When the scan is complete, the scanner user 
+interface is closed. Windows finds a window to activate in another 
+process. <p>
+
+There are some windows messages passed around e.g. WM_ACTIVATE, which
+may provide a facility to move the application window to the front.
+Alternatively, call the scanner from a modal dialog.<p>
+
+
+<br><br><br><br><br><br><br><br><br>
+
+<hr>
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="twexplore.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td align="center" width="100%" bgcolor=#99ccff><b>Miscellaneous</b></td>
+</tr></table>
+
+</body>
+</html>
+
+

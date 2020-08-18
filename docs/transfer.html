@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>Transfer Mechanisms</title>
+</head>
+<body>
+
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="caps.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="audio.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Guide</b></td>
+</tr></table>
+<hr>
+
+<h1>Transfer Mechanisms</h1>
+
+TWAIN provides three mechanisms for passing images back to the application. 
+These are 'Native', 'File' and 'Memory'. The twainmodule only supports two
+of these, 'Native' and 'File'.<p>
+
+<h2>Native Image Transfer</h2>
+
+All TWAIN sources must support 'Native' mode image transfer.<p>
+
+In native mode transfer, the TWAIN source places the image in a Windows
+shared memory area called the Global Heap. The TWAIN source sends the handle
+to that memory area to our application. Our application can connect to the
+memory area using the handle. <p>
+
+The Native Image buffer is always in 'DIB' (device independent bitmap) format 
+on Windows. DIB files cannot be displayed directly in Python. The twain module
+provides a function (DIBtoBMFile()) to convert the file to a Windows Bitmap File, which
+can be loaded into an Image. The twain module also provides a function
+(DIBtoXBMFile()), which converts the file to an XBM (X-windows bitmap) format, 
+which can be displayed in a Tk label.<p>
+
+Once the image has been processed, the application must 'free' the handle,
+using the GlobalHandleFree() function. Otherwise the memory will not be 
+available to any Windows Applications.<p>
+
+<h3>Methods</h3>
+<ul>
+<li>XferImageNatively</li>
+</ul>
+
+
+<h2>File Based Transfer</h2>
+
+TWAIN sources are not required to support File Based transfer. However, it 
+is recommended. You can determine whether file based transfer is supported
+by your TWAIN source, by using the ICAP_XFERMECH capability. The values
+for this capability are defined by the TWSX_ constants.<p>
+
+In File based transfer, the TWAIN source places the image into a windows
+disk file. Once the transfer has been completed the file exists. The application
+is responsible for the file and should provide house-keeping functions for 
+the files.<p>
+
+The application can specify both the filename and the file format prior to
+commencing the transfer. The available file formats for your TWAIN source
+can be retrieved using the ICAP_IMAGEFILEFORMAT capability. The file format and
+name can both be specified using the SetXferFileName method.<p>
+
+<h3>Methods</h3>
+<ul>
+<li>GetCapability(ICAP_IMAGEFILEFORMAT)</li>
+<li>GetCapability(ICAP_XFERMECH)</li>
+<li>GetXferFileName</li>
+<li>SetXferFileName</li>
+<li>XferImageByFile</li>
+</ul>
+
+<hr>
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="caps.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="audio.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Guide</b></td>
+</tr></table>
+
+</body>
+</html>
+
+

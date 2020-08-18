@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>twexplore</title>
+</head>
+<body>
+
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="exception.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="faq.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Miscellaneous</b></td>
+</tr></table>
+<hr>
+
+<h1>twexplore</h1>
+
+The twexplore program is intended to allow
+a developer to explore the interaction between the twainmodule API and
+their TWAIN source. It is particularly useful to identify the quirks of your
+data source. <p>
+
+The twexplore program is available either to run as a script from the Python
+interpreter or as an executable. The executable does not require a Python 
+system to run.<p>
+
+<img src=images/FirstScreen.png><p>
+
+On loading the program, a form is displayed, as show above. The form has 
+a menubar, from which all the options are taken, a main pane, which will
+show the source capabilities when you connect to the source, and a status
+bar. The status bar has three sections, showing the latest message, the 
+name of the current source and the current state in the TWAIN state 
+concept.<p>
+
+To open a source, select menu->connect. If you have twain source on your
+PC, you should see an option list. Select the driver you are interested in.
+Once a driver is selected, the source information is displayed in a dialogue.
+The TWAIN specification contains information on the meaning of the source
+information.<p>
+
+<img src=images/SourceInfo.png><p>
+
+Once the source is open, the source capabilities are displayed on the main
+form. Where the attempt to read a capability produced an exception, the
+exception is displayed instead of the value. The 'Supported Values' column
+shows the result of the GetCapability() operation. This value types can be
+seen clearly. The highlighted item (ICAP_PIXELTYPE) displays its capabilties
+using an enumerator. The 'Current Value' column shows that the current value
+is 2 (from the specification page 336, 2=TWPT_RGB).<p>
+
+Under the TWAIN specification, the data source can give our program the list
+of supported capabilities (CAP_SUPPORTEDCAPS). The supported capabilities are
+shows in green.<p>
+
+<img src=images/MainScreen.png><p>
+
+By double clicking on a capability a capability editing dialog is show. This
+dialog allows you to attempt to set the capability to an arbitrary value.
+You enter the value in the dialog box and select the type from the radio-box.
+Where the capability can be retrieved, the dialog is initialised to the 
+current value of the capability and the type returned by the GetCapabilityCurrent()
+request.<p>
+
+The value field is interpreted in the context of the twain module. You can
+therefore use both values (e.g. 0) and constants (e.g. TWPT_RGB). The log
+message is translated back to the symbolic constant.<p>
+
+You can reset a capability to the default value using the 'Reset Value' button.
+After you have changed a capability, you can use the menu option 'File->Refresh Capabilities'
+to refresh the main display. <p>
+
+<img src=images/ChangeCap.png><p>
+
+To request an image from the TWAIN device, select the menu option 
+'File->Acquire'. You are given the option of displaying the TWAIN source
+user interface. If you do not use the twain source user interface, you can
+use the Layout dialog to select a frame from the image.<p>
+
+<img src=images/Acquire.png><p>
+
+When the image is available on the Data Source, our application is notified
+via a callback and the transfer dialog is displayed. This dialog shows the
+information which is available about the image. The twain module supports
+two options for transfer of the image 'Transfer Natively', or 'Transfer to File'.
+If you select 'Transfer Natively', the image is displayed in a simple frame.
+If you select transfer to file, you will be prompted for a filename and file
+type. If there are no more images remaining on the Data Source, the Transfer
+dialog is closed.<p>
+
+<img src=images/Transfer.png><p>
+ 
+<hr>
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="exception.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="faq.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Miscellaneous</b></td>
+</tr></table>
+
+</body>
+</html>
+
+

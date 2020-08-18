@@ -1,0 +1,174 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>Quick Start Using Tkinter</title>
+</head>
+<body>
+
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="quickstart.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="quickstartgtk.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Tutorial</b></td>
+</tr></table>
+<hr>
+
+<h1>Quick Start (Tkinter)</h1>
+
+The twain module can only be used in an application with a message loop. This 
+section describes how to use the module in a Tk application.<p>
+
+The following source code demonstrates a simple application, which retrieves
+images from the scanner (or other image source), and displays the images
+in the form. This program is called <b>simple_tk.py</b> and is in the
+demo directory of the distribution.<p>
+
+To connect to the data source, select File->Connect from the menu. The source
+manager should give a list of the available data sources. To acquire an image,
+select File->Acquire from the menu.<p>
+
+<hr>
+
+<b>Example : simple_wx.py</b><p>
+
+<pre>
+
+from Tkinter import *
+
+from simple_base import TwainBase
+
+import ImageTk # PIL required
+
+import traceback, sys
+
+TITLE="Simple Twain Demo Using Tkinter"
+
+class MainWindow(Frame, TwainBase):
+    def __init__(self, title):
+        Frame.__init__(self, colormap="new", visual="truecolor")
+        self.master.title(title)
+        self.master.geometry("500x500+100+100")
+        MenuPanel = Frame(self, relief=RAISED, borderwidth=2)
+        File = Menubutton(MenuPanel, text="File")
+        File.menu = Menu(File)
+        File.menu.add_command(label="Connect", command=self.MnuOpenScanner)
+        File.menu.add_command(label="Acquire Natively", command=self.MnuAcquireNatively)
+        File.menu.add_command(label="Acquire By File", command=self.MnuAcquireByFile)
+        File.menu.add('separator')
+        File.menu.add_command(label="Exit", command=self.MnuQuit)
+        File['menu'] = File.menu
+        File.pack(side="left")
+        MenuPanel.pack(side="top", fill=X, expand=1)
+        self.tk_menuBar(File)
+        self.pack(fill="both")
+        self.bind('<Destroy>', self.OnQuit)
+
+        self.imageLabel = Label(self)
+        self.imageLabel.pack(side="left", fill="both", expand=1)
+
+        # Print out the exception - requires that you run from the command prompt
+        sys.excepthook = traceback.print_exception
+
+        # Initialise TWAIN Base class
+        self.Initialise()
+
+        # Initialise Idle Timer
+        self.after(250, self.OnIdleTimer)
+
+    def MnuQuit(self, event=None):
+        self.unbind('<Destroy>')
+        self.Terminate()          # Terminate base class
+        self.quit()
+
+    def OnQuit(self, event=None):
+        self.Terminate()
+
+    def MnuOpenScanner(self, event=None):
+        self.OpenScanner(self.winfo_id(), ProductName="Simple Tk Demo")
+
+    def MnuAcquireNatively(self, event=None):
+        self.AcquireNatively()
+
+    def MnuAcquireByFile(self, event=None):
+        self.AcquireByFile()
+
+    def DisplayImage(self, filename):
+        try:
+            imagedata = ImageTk.PhotoImage(file=filename)
+            self.imageLabel.config(image=imagedata)
+            self.imageLabel.pack(side="left", fill="both", expand=1)
+            self.master.title(filename)
+            # Need to keep this object resident
+            self.imagedata= imagedata
+        except:
+            ei = sys.exc_info()
+            traceback.print_exception(ei[0], ei[1], ei[2])
+            
+    def LogMessage(self, message):
+        self.master.title(message)
+
+    def OnIdleTimer(self):
+        self.PollForImage()
+        self.after(250, self.OnIdleTimer)
+
+MainWindow(TITLE).mainloop()
+ 
+
+
+</pre>
+
+<p>
+<b>Step 1 - MnuOpenScanner</b><p>
+
+The MnuOpenScanner calls the TwainBase OpenScanner method. The parameters are
+the windows handle for the main window, the name of this application and
+a flag to indicate whether we are using callbacks are polling.<p>
+
+The TWAIN protocol uses the client's windows message queue to perform
+communication. To access the message queue, the clients window handle is
+always passed to the SourceManager constructor. The window handle is
+retrieved using the Tkinter <em>Frame.winfo_id()</em> call.<p>
+
+Note: the Tkinter toolkit can only using the polling interface. The callback
+mechanism is unreliable with Tkinter.<p>
+
+<b>Step 2 - MnuAcquireNatively, MnuAcquireByFile</b><p>
+
+When the client application wants to acquire a document from the scanner, 
+it makes a request to the scanner to acquire the document. There are two
+transfer mechanisms, transfer by file or transfer natively.<p>
+
+There are implementation problems with some scanners which may make one of
+the mechanisms inoperable or unreliable.<p>
+
+<b>Step 3 - DisplayImage</b><p>
+
+This is a simple method to display the image on the screen. The base class
+ProcessXfer method has done all of the heavy lifting.<p>
+
+The image stored in the file is generally a bitmap. Tkinter does not have
+a widget to display these images directly. Therefore this example uses the
+extensions in the Python Imaging Library (PIL) which you must download 
+separately.<p> 
+
+<b>Step 4 - MnuQuit</b><p>
+ 
+The TWAIN software interfaces to your window message queue. If you
+close your window without deleting the Source Manager object, the TWAIN
+software may attempt to write messages to a deleted queue. This may cause
+your program to hang when it attempts to exit.<p>
+
+<hr>
+ <table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="quickstart.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="quickstartgtk.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Tutorial</b></td>
+</tr></table>
+
+</body>
+</html>
+
+

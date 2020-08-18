@@ -1,0 +1,180 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>Quick Start - wxPython</title>
+</head>
+<body>
+
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="demo_base.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="quickstarttk.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Tutorial</b></td>
+</tr></table>
+<hr>
+
+<h1>Quick Start (wxPython)</h1>
+
+The twain module can only be used in an application with a message loop. This 
+section describes how to use the module in a wxWindows application.<p>
+
+The following source code demonstrates a simple application, which retrieves
+images from the scanner (or other image source), and displays the images
+in the form. This program is called <b>simple_wx.py</b> and is in the
+demo directory of the distribution.<p>
+
+To connect to the data source, select File->Connect from the menu. The source
+manager should give a list of the available data sources. To acquire an image,
+select File->Acquire from the menu.<p>
+
+<hr>
+
+<b>Example : simple_wx.py</b><p>
+
+<pre>
+import wx
+
+from simple_base import TwainBase
+
+import traceback, sys
+
+ID_EXIT=102
+ID_OPEN_SCANNER=103
+ID_ACQUIRE_NATIVELY=104
+ID_SCROLLEDWINDOW1=105
+ID_BMPIMAGE=106
+ID_ACQUIRE_BY_FILE=107
+ID_TIMER=108
+
+# You can either Poll the TWAIN source, or process the scanned image in an
+# event callback. The event callback has not been fully tested using GTK.
+# Specifically this does not work with Tkinter.
+USE_CALLBACK=True
+
+
+class MainFrame(wx.Frame, TwainBase):
+    """wxPython implementation of the simple demonstration"""
+    def __init__(self, parent, id, title):
+        wx.Frame.__init__(self, parent, id, title,
+        wx.DefaultPosition, wx.Size(400,300))
+        self.CreateStatusBar()
+        menu = wx.Menu()        
+        menu.Append(ID_OPEN_SCANNER, "&Connect", "Connect to the Scanner")
+        menu.Append(ID_ACQUIRE_NATIVELY, "Acquire &Natively", "Acquire an Image using Native Transfer Interface")
+        menu.Append(ID_ACQUIRE_BY_FILE, "Acquire By &File", "Acquire an Image using File Transfer Interface")
+        menu.AppendSeparator()
+        menu.Append(ID_EXIT, "E&xit", "Terminate the program")
+        menuBar = wx.MenuBar()
+        menuBar.Append(menu, "&File")
+        self.SetMenuBar(menuBar)
+
+        wx.EVT_MENU(self, ID_EXIT, self.MnuQuit)
+        wx.EVT_MENU(self, ID_OPEN_SCANNER, self.MnuOpenScanner)
+        wx.EVT_MENU(self, ID_ACQUIRE_NATIVELY, self.MnuAcquireNatively)
+        wx.EVT_MENU(self, ID_ACQUIRE_BY_FILE, self.MnuAcquireByFile)
+        wx.EVT_CLOSE(self, self.OnClose)
+
+        self.scrolledWindow1 = wx.ScrolledWindow(id = ID_SCROLLEDWINDOW1, name = 'scrolledWindow1', parent = self, pos = wx.Point(0, 0), style = wx.TAB_TRAVERSAL | wx.SUNKEN_BORDER)
+        self.bmpImage = wx.StaticBitmap(bitmap = wx.NullBitmap, id = ID_BMPIMAGE, name = 'bmpImage', parent = self.scrolledWindow1, pos = wx.Point(0, 0), style = 0)
+
+        # Print out the exception - requires that you run from the command prompt
+        sys.excepthook = traceback.print_exception
+
+        # Initialise the Twain Base Class
+        self.Initialise()
+
+        # Polling based example
+        if not USE_CALLBACK:
+            wx.EVT_TIMER(self, ID_TIMER, self.onIdleTimer)
+            self.timer=wx.Timer(self, ID_TIMER)
+            self.timer.Start(250)
+
+    def MnuQuit(self, event):
+        self.Close(1)
+
+    def OnClose(self, event):
+        # Terminate the Twain Base Class
+        self.Terminate()
+        self.Destroy()
+
+    def MnuOpenScanner(self, event):
+        self.OpenScanner(self.GetHandle(), ProductName="Simple wxPython Demo", UseCallback=USE_CALLBACK)
+
+    def MnuAcquireNatively(self, event):
+        return self.AcquireNatively()
+
+    def MnuAcquireByFile(self, event):
+        return self.AcquireByFile()
+
+    def DisplayImage(self, ImageFileName):
+        bmp = wx.Image(ImageFileName, wx.BITMAP_TYPE_BMP).ConvertToBitmap()
+        self.bmpImage.SetBitmap(bmp)
+        self.scrolledWindow1.maxWidth = bmp.GetWidth()
+        self.scrolledWindow1.maxHeight = bmp.GetHeight()
+        self.scrolledWindow1.SetScrollbars(20, 20, bmp.GetWidth()/20, bmp.GetHeight()/20)
+        self.bmpImage.Refresh()
+
+    def LogMessage(self, message):
+        # Set the title on the main window - used for tracing
+        self.SetTitle(message)
+
+    def onIdleTimer(self, event=None):
+        """This is a polling mechanism. Get the image without relying on the callback."""
+        self.PollForImage()
+
+class SimpleApp(wx.App):
+    def OnInit(self):
+        frame = MainFrame(None, -1, "Simple TWAIN Demo")
+        frame.Show(True)
+        self.SetTopWindow(frame)
+        return 1
+
+SimpleApp(0).MainLoop()
+ 
+</pre>
+<p>
+<b>Step 1 - MnuOpenScanner</b><p>
+
+The MnuOpenScanner calls the TwainBase OpenScanner method. The paramaters are
+the windows handle for the main window, the name of this application and
+a flag to indicate whether we are using callbacks are polling.<p>
+
+The TWAIN protocol uses the client's windows message queue to perform
+communication. To access the message queue, the clients window handle is
+always passed to the SourceManager constructor. The window handle is
+retrieved using the wxPython <em>GetHandle</em> call.<p>
+ 
+<b>Step 2 - MnuAcquireNatively, MnuAcquireByFile</b><p>
+
+When the client application wants to acquire a document from the scanner, 
+it makes a request to the scanner to acquire the document. There are two
+transfer mechanisms, transfer by file or transfer natively.<p>
+
+There are implementation problems with some scanners which may make one of
+the mechanisms inoperable or unreliable.<p>
+
+<b>Step 3 - DisplayImage</b><p>
+
+This is a simple method to display the image on the screen. The base class
+ProcessXfer method has done all of the heavy lifting.<p>
+
+<b>Step 4 - MnuQuit</b><p>
+ 
+The TWAIN software interfaces to your window message queue. If you
+close your window without deleting the Source Manager object, the TWAIN
+software may attempt to write messages to a deleted queue. This may cause
+your program to hang when it attempts to exit.<p>
+
+<hr>
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="demo_base.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="quickstarttk.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Tutorial</b></td>
+</tr></table>
+
+</body>
+</html>
+
+

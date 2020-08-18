@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>Low-level Access to TWAIN</title>
+</head>
+<body>
+
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="audio.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="twainif.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Guide</b></td>
+</tr></table>
+<hr>
+
+<h1>Low Level Access to TWAIN</h1>
+
+You may require access to a TWAIN API function which is not implemented as
+a method in the SourceManager or the Source modules. When this occurs, you
+have the option of using the low-level interface to the twainmodule. <p>
+
+The TWAIN interface is a set of calls on a single method in both the 
+SourceManager and the Source objects (called DSM_Entry). You can perform any
+of the TWAIN functions using this method.<p>
+
+The format of this call is:<br>
+&nbsp;&nbsp;&nbsp;SourceManager.DSM_Entry(DataGroup, DataItemId, MessageId, Data)<p>
+
+<table summary="DSM_Entry Parameters" width=600 cellspacing=15>
+<tr>
+<td>DataGroup</td>
+<td>This indicates the data group, within which the data item id is defined.
+It is one of the twain.DG_ constants.</td>
+</tr>
+<tr>
+<td>DataItemId</td>
+<td>This defines the type of the data passed. It is one of the twain.DAT_
+constants.</td>
+</tr>
+<tr>
+<td>MessageId</td>
+<td>This defines the operation to be performed. It is one of the twain.MSG_
+constants</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>This is the data for the operation. It is a python string, which must
+be preallocated to the correct length.</td>
+</tr>
+</table><p>
+
+<h3>Operation Triplets</h3>
+
+The DataGroup, DataItemId and MessageId are defined in the TWAIN specification
+for each operation. These are known as the operation triplets, and are documented
+in chapter 7. For example, see page 182 for the DG_CONTROL/DAT_IDENTITY/MSG_GETFIRST
+triplet. This operation returns the identity structure for the first available
+TWAIN source, in a structure of format TW_IDENTITY. Our Python call is as
+follows:<p>
+
+<pre>
+		 from twain import *
+		 SM = SourceManager(0L)
+		 ...
+		 SM.DSM_Entry(DG_CONTROL, DAT_IDENTITY, MSG_GETFIRST, Identity)
+</pre>
+
+<h3>Native C Structures</h3>
+
+Python provides a module called struct, for manipulating C language data
+structures. We must use this module for creating the structures to be passed into
+and interpreting the structures returned from the DSM_Entry routine. All of the
+structures passed to DSM_Entry are defined in the twain.h C header file, which
+is part of the TWAIN Toolkit, and can be downloaded from www.twain.org.<p>
+
+The Identity object in the code snippet above is of type TW_IDENTITY. This
+structure is defined as follows:<p>
+<pre>
+ typedef unsigned short TW_UINT16;
+ typedef unsigned long  TW_UINT32;
+ typedef char    TW_STR32[34];
+
+ typedef struct {
+   TW_UINT16  MajorNum;  /* Major revision number of the software. */
+   TW_UINT16  MinorNum;  /* Incremental revision number of the software. */
+   TW_UINT16  Language;  /* e.g. TWLG_SWISSFRENCH */
+   TW_UINT16  Country;   /* e.g. TWCY_SWITZERLAND */
+   TW_STR32   Info;      /* e.g. "1.0b3 Beta release" */
+ } TW_VERSION;
+
+ typedef struct {
+    TW_UINT32  Id;              /* Unique number.  In Windows, application hWnd      */
+    TW_VERSION Version;         /* Identifies the piece of code              */
+    TW_UINT16  ProtocolMajor;   /* Application and DS must set to TWON_PROTOCOLMAJOR */
+    TW_UINT16  ProtocolMinor;   /* Application and DS must set to TWON_PROTOCOLMINOR */
+    TW_UINT32  SupportedGroups; /* Bit field OR combination of DG_ constants */
+    TW_STR32   Manufacturer;    /* Manufacturer name, e.g. "Hewlett-Packard" */
+    TW_STR32   ProductFamily;   /* Product family name, e.g. "ScanJet"       */
+    TW_STR32   ProductName;     /* Product name, e.g. "ScanJet Plus"         */
+ } TW_IDENTITY;
+
+</pre>
+
+The TW_VERSION structure is of size 42 bytes (2 + 2 + 2 + 2 + 34). The 
+TW_IDENTITY structure is of size 156 bytes(4 + 42 + 2 + 2 + 4 + 34 + 34 + 34).<p>
+
+Note: The TWAIN standard pack values to two byte boundaries. In normal 
+C structures there is a padding of two bytes before SupportedGroups. However,
+in the TWAIN interface there is none.<p>
+
+To create a string of the correct length to be passed into the DSM_Entry
+method, we use the struct.pack() method.<p>
+<pre>
+		 Identity = struct.pack("156s", "")
+</pre>
+
+To extract data out of the result, we can use the struct module. However, just
+to extract a simple string, when we know the offset, it is easy to use Python
+standard functionality.<p>
+<pre>
+		 ProductName = Identity[122:]
+</pre>
+
+The ProductName is a 'C' language string. This string is, by convention, 
+terminated by a NULL character. We have to truncate the C language string
+at this NULL character to get a Python Native format string. <p>
+<pre>
+		 iOffset = ProductName.find('\0')
+		 if iOffset != -1:
+		     ProductName = ProductName[:iOffset]
+</pre>
+
+Our simple example is complete as follows:
+		 
+<pre>
+		 from twain import *
+		 SM = SourceManager(0L)
+		 Identity = struct.pack("156s", "")
+		 SM.DSM_Entry(DG_CONTROL, DAT_IDENTITY, MSG_GETFIRST, Identity)
+		 ProductName = Identity[122:]
+		 iOffset = ProductName.find('\0')
+		 if iOffset != -1:
+		     ProductName = ProductName[:iOffset]
+		 print "The data source name is: ", ProductName
+
+</pre>
+
+					 
+<hr>
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="audio.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="twainif.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Guide</b></td>
+</tr></table>
+					 
+</body>
+</html>
+
+

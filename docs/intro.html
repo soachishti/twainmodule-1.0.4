@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>Overview</title>
+</head>
+<body>
+
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="copyright.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="install.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Introduction</b></td>
+</tr></table>
+<hr>
+
+<h1>Overview</h1>
+
+This module, 'twain', provides an interface to the windows 
+TWAIN sub-system. The software is available only for windows platforms.
+This software is designed to support scanners, digital cameras and audio
+equipment which conform to the twain specification.<p>
+
+The twain module also includes a demonstration program, called twexplore.py, 
+which can be used to investigate the interface to your twain compatible device.
+<p>
+
+<h2>Introduction to TWAIN</h2>
+
+TWAIN is a published API which provides an interface between an application
+and a scanner or other source of images. The TWAIN API is maintained and 
+developed by TWAIN Working Group, see <a href=http://www.twain.org>
+www.twain.org</a>. <p>
+
+The application connects to and communicates with the TWAIN <b>Source Manager</b>
+program, which is implemented as twain.dll. The TWAIN Source Manager loads
+the program to support the device with which your application needs to communicate.
+The program which supports the device is called a <b>Data Source</b>.<p>
+
+The <a href=http://www.twain.org/download.html>TWAIN specification </a> defines
+a simple finite-state model for communicating with the TWAIN sub-system. The states
+are as follows:<p>
+
+<table summary="Twain Finite-State Model" border=1 width=700>
+<tr><td>State Name</td><td>State Description</td><td>Application Activities</td>
+<td>Move to next state on</td></tr>
+<tr><td>1 - Pre-Session</td><td>Source Manager is not Loaded</td>
+<td>None</td><td>Load DLL</td></tr>
+<tr><td>2 - Source Manager Loaded</td><td>Source Manager DLL has been
+loaded.</td><td>None</td><td>Open Source Manager</td></tr>
+<tr><td>3 - Source Manager Open</td><td>Application can communicate with
+the source manager</td><td>Can query the list of available sources</td>
+<td>Open Source</td></tr>
+<tr><td>4 - Source Open</td><td>The source for the appropriate device is
+open.</td><td>Application can negotiate the details of the session,
+e.g. image format, number of colours etc.</td><td>Request Aquisition of image</td></tr>
+<tr><td>5 - Source Enabled</td><td>The source is attempting to acquire
+data on behalf of the application</td><td>None</td><td>User/Source produce image</td></tr>
+<tr><td>6 - Transfer Ready</td><td>The source has acquired the data on
+behalf of the application.</td><td>Begin the transfer.</td><td>Transfer Started.</td></tr>
+<tr><td>7 - Transfer in Progress</td><td>The source is transferring the
+data to the application.</td><td>Receive data.</td></td></td></tr>
+</table>
+<p>
+
+<h2>References</h2>
+<ul>
+<li>TWAIN Specification, version 1.9 at <a href=http://www.twain.org>http://www.twain.org</a>.
+</li>
+<li>TWAIN Developers Toolkit, version 1.7.0.3 at <a href=http://www.twain.org>http://www.twain.org</a>.
+</li>
+</ul>
+
+<h2>Acknowledgements</h2>
+<ul>
+<li>Riaan and the boa constructor team for the tool their great design tool, which
+I used to build twexplore.py.</li>
+<li>Thomas Heller for the py2exe tool, with which I built the twexplore.exe.</li>
+<li>Robin and the wxPython team for their wxWindows implmentation for Python</li>
+<li>All those who produced Python and produced the great port for windows</li>
+</ul>
+
+<hr>
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="copyright.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="install.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Introduction</b></td>
+</tr></table>
+
+</body>
+</html>
+
+

@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>Quick Start - wxGTK</title>
+</head>
+<body>
+
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="quickstarttk.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="caps.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Tutorial</b></td>
+</tr></table>
+<hr>
+
+<h1>Quick Start (wxGTK)</h1>
+
+The twain module can only be used in an application with a message loop. This 
+section describes how to use the module in a wxGTK application.<p>
+
+The following source code demonstrates a simple application, which retrieves
+images from the scanner (or other image source), and displays the images
+in the form. This program is called <b>simple_gtk.py</b> and is in the
+demo directory of the distribution.<p>
+
+To connect to the data source, select Twain->Open Scanner from the menu. The source
+manager should give a list of the available data sources. To acquire an image,
+select Twain->Acquire from the menu.<p>
+
+<hr>
+
+<b>Example : simple_wx.py</b><p>
+
+<pre>
+"""simple_gtk.py
+
+This is a simple demonstration of the twain module using pyGTK.
+
+This version does not use callbacks. Instead, it polls to check to
+see if the image is ready.
+"""
+
+import pygtk
+pygtk.require('2.0')
+import gtk
+import gobject
+
+from simple_base import TwainBase
+
+# You can either Poll the TWAIN source, or process the scanned image in an
+# event callback. The event callback has not been fully tested using GTK.
+# Specifically this does not work with Tkinter.
+USE_CALLBACK=True
+
+
+class ApplicationWindow(TwainBase):
+
+    ui = '''&lt;ui&gt;
+    &lt;menubar name="MenuBar"&gt;
+      &lt;menu action="TWAIN"&gt;
+        &lt;menuitem action="Open Scanner"/&gt;
+        &lt;menuitem action="Acquire By File"/&gt;
+        &lt;menuitem action="Acquire Natively"/&gt;
+        &lt;menuitem action="Quit"/&gt;
+      &lt;/menu&gt;
+    &lt;/menubar&gt;
+    &lt;/ui&gt;'''
+
+
+    def mnuOpenScanner(self, widget=None, event=None, data=None):
+        """Connect to the scanner"""
+        self.OpenScanner(self.window.window.handle,
+            ProductName="Simple pyGTK Demo", UseCallback=USE_CALLBACK)
+        return True
+    
+    def mnuAcquireNatively(self, widget=None, event=None, data=None):
+        """Acquire Natively - this is a memory based transfer"""
+        return self.AcquireNatively()
+
+    def mnuAcquireByFile(self, widget=None, event=None, data=None):
+        """Acquire by file"""
+        return self.AcquireByFile()
+
+    def onIdleTimer(self):
+        """This is a polling mechanism. Get the image without relying on the callback."""
+        self.PollForImage()
+        return True
+
+    def DisplayImage(self, ImageFileName):
+        """Display the image from a file"""
+        self.image.set_from_file(ImageFileName)
+        self.image.show()
+
+    def mnuQuit(self, widget=None, event=None, data=None):
+        """I want an exit option on the menu. However, I don't know how to do it."""
+        return gtk.main_quit()
+
+    def LogMessage(self, title):
+        """ Display the title in the window. I use this as a trivial
+        trace of the current state of the program"""
+        self.window.set_title(title)
+        
+    def OnQuit(self, event):
+        gtk.main_quit()
+        
+    def __init__(self):
+ 
+        """This is the pyGTK stuff to create the window and menubar"""
+ 
+        # Set up Window
+        window = self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        window.set_size_request(500, 500)
+        window.connect("destroy", lambda w: gtk.main_quit())
+        self.LogMessage("Twain Demo - pyGTK")
+ 
+        # Set up Widget Container
+        vbox = gtk.VBox(False, 0)
+        window.add(vbox)
+        vbox.show()
+      
+        # Setup the UI Manager for Menu    
+        ui_manager = gtk.UIManager()
+        
+        # Add Accelerator Group
+        accel_group = ui_manager.get_accel_group()
+        window.add_accel_group(accel_group)
+        
+        # Add ActionGroup
+        action_group = gtk.ActionGroup('Simple_GTK Actiongroup')
+        
+        # Create Actions
+        action_group.add_actions(
+            [
+                 ("TWAIN",                None,    "TWAIN",                "<control>T",   None,    None),
+                 ("Open Scanner",         None,    "Open Scanner",         "<control>O",   None,    self.mnuOpenScanner),
+                 ("Acquire By File",      None,    "Acquire By File",      "<control>F",   None,    self.mnuAcquireByFile),
+                 ("Acquire Natively",     None,    "Acquire Natively",     "<control>N",   None,    self.mnuAcquireNatively),
+                 ("Quit",                 None,    "Quit",                 "<control>Q",   None,    self.OnQuit)
+            ]
+        )  
+        
+        # Attach the ActionGroup
+        ui_manager.insert_action_group(action_group, 0)
+
+        # Add a UI Description
+        ui_manager.add_ui_from_string(self.ui)
+
+        # Create a menu-bar to hold the menus and add it to our main window
+        menubar = ui_manager.get_widget('/MenuBar')
+        vbox.pack_start(menubar, False, False, 2)
+        menubar.show()
+
+        # Add an Image field to display what is scanned
+        self.image = gtk.Image()
+        vbox.pack_end(self.image, True, True, 2)
+ 
+        # Display
+        window.show()
+
+        # Set up the idle timer. I use this to check to see if an image is ready.
+        if not USE_CALLBACK:
+            self.idleTimer = gobject.idle_add(self.onIdleTimer)
+        
+
+if __name__ == "__main__":
+    app = ApplicationWindow()
+    gtk.main()
+
+
+</pre>
+<p>
+<b>Step 1 - MnuOpenScanner</b><p>
+
+The MnuOpenScanner calls the TwainBase OpenScanner method. The parameters are
+the windows handle for the main window, the name of this application and
+a flag to indicate whether we are using callbacks are polling.<p>
+
+The TWAIN protocol uses the client's windows message queue to perform
+communication. To access the message queue, the clients window handle is
+always passed to the SourceManager constructor. The window handle is
+retrieved using the pyGTK <em>window.window.handle</em> attribute.<p>
+ 
+<b>Step 2 - MnuAcquireNatively, MnuAcquireByFile</b><p>
+
+When the client application wants to acquire a document from the scanner, 
+it makes a request to the scanner to acquire the document. There are two
+transfer mechanisms, transfer by file or transfer natively.<p>
+
+There are implementation problems with some scanners which may make one of
+the mechanisms inoperable or unreliable.<p>
+
+<b>Step 3 - DisplayImage</b><p>
+
+This is a simple method to display the image on the screen. The base class
+ProcessXfer method has done all of the heavy lifting.<p>
+
+<b>Step 4 - MnuQuit</b><p>
+ 
+The TWAIN software interfaces to your window message queue. If you
+close your window without deleting the Source Manager object, the TWAIN
+software may attempt to write messages to a deleted queue. This may cause
+your program to hang when it attempts to exit.<p>
+
+<hr>
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="quickstarttk.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="caps.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Tutorial</b></td>
+</tr></table>
+
+</body>
+</html>
+
+

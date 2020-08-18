@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>Capabilities</title>
+</head>
+<body>
+
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="quickstarttk.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="transfer.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Guide</b></td>
+</tr></table>
+<hr>
+
+<h1>Using Capabilities</h1>
+
+The TWAIN system allows your application to configure the device using 
+<em>capabilities</em>. Capabilities are the options which are available on
+the scanner. Your application can query and set the capabilities.
+
+<h2>Querying Capabilities</h2>
+
+In order to query capabilities, you have to create a Source object. 
+The following interactive session shows the three functions for 
+querying capabilities.<p>
+
+<PRE>
+C:\Python22>python
+Python 2.2 (#28, Dec 21 2001, 12:21:22) [MSC 32 bit (Intel)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import Tkinter
+>>> F=Tkinter.Frame()
+>>> import twain
+>>> sm=twain.SourceManager(F.winfo_id())
+>>> ss=sm.OpenSource()
+>>> ss.GetCapability(twain.ICAP_IMAGEFILEFORMAT)
+(4, (0, 0, [2, 4, 0]))
+>>> ss.GetCapabilityDefault(twain.ICAP_IMAGEFILEFORMAT)
+(4, 2)
+>>> ss.GetCapabilityCurrent(twain.ICAP_IMAGEFILEFORMAT)
+(4, 2)
+>>>
+</PRE>
+<p>
+You need to have a window handle before you can create a SourceManager
+object. Here, I create a Tk Frame window, and use it's window handle in to
+initiate the SourceManager.<p>
+
+The Capabilities are related to the Source, not the SourceManager, so you
+have to create a Source object, i.e. you connect to your scanner software.<p>
+
+The Capbililities are defined by numeric constants. The names of the constants
+are in the TWAIN specification, chapter 9. There are three groups of
+capabilities, CAP_*, ICAP_* and ACAP_*. The CAP_* values are generic capabilities.
+The ICAP_* values refer to image-specific capabilities. The ACAP_* values
+refer to audio-specific capabilities. These capabilities are defined in the
+twain module (for specification version 1.9). In this example we are looking
+at the Image File Format capability (ICAP_IMAGEFILEFORMAT).<p>
+
+The <b>GetCapability() method</b> returns the available capabilities. The 
+available capabilities are returned in one of four standard containers,
+'ONEVALUE', 'RANGE', 'ENUMERATION' or 'ARRAY'. The ICAP_IMAGEFILEFORMAT 
+capabities are returned here as an ENUMERATOR. <p>
+
+The ENUMERATION, ONEVALUE and ARRAY are all returned as tuples, where the 
+first value is the type of the value. The type of the value is shown in 
+the specification (chapter 9). The type used here is type '4', which is
+twain.TWTY_UINT16 (unsigned 16bit integer). The type constants are all prefixed
+with TWTY_ and are defined in the twain module.<p>
+
+The ENUMERATION indicates that the value has a set of specific, allowed values.
+The ENUMERATION includes a tuple with three members. These are, the <em>index</em>
+current value of the capability, the <em>index</em> of the default value of the 
+capability, and the list of possible values, here 2, 4, 0.
+This return value is therefore interpreted as:<br>
+<ul>
+<li>The ICAP_IMAGEFILEFORMAT is a 16bit integer value.</li>
+<li>The current value is 2 (member 0) [twain.TWTY_BMP]</li>
+<li>The default value is 2 (member 0) [twain.TWTY_BMP]</li>
+<li>The full set of values is 0, 2, 4 [twain.TWTY_TIFF, twain.TWTY_BMP, twain.TWTY_JFIF]</li>
+</ul><p>
+
+The <b>GetCapabilityDefault() method</b> returns the default value
+of capability. The default capability is normally a single value and is returned
+as the second member of the tuple (the first is the type as we said above).
+This is the value, to which the capability is set when you connect initially,
+or when you <em>reset</em> the capability. <p>
+
+The <b>GetCapabilityCurrent() method</b> returns the current value
+of capability. The current capability is normally a single value and is returned
+as the second member of the tuple (the first is the type as we said above).<p>
+
+
+<h2>Setting Capababilities</h2>
+
+Your application can modify the capabilities in three ways:
+<ul>
+<li> It can set the current value of the capability</li>
+<li> It can reset the capability to the default value</li>
+<li> It can restrict the set of options available to the user</li>
+</ul>
+<p>
+
+To set the current value of the capability, use the <b>SetCapability method</b>.
+This method take three parameters, the identity of the capabaility (CAP_*,
+ICAP_* or ACAP_*), the type of the value (as returned from GetCapabilityCurrent),
+and the new value.<p>
+<PRE>
+>>> ss.GetCapabilityCurrent(twain.ICAP_IMAGEFILEFORMAT, TWTY_UINT16, TWFF_JFIF)
+</PRE><p>
+This command instructs the scanner to return the image data as JPEG Interchange
+file format.<p>
+
+Note that, although the call to SetCabilility may return success, this does
+not indicate that the source accepted the value. The source may return
+success to indicate that it set it to the 'next best' value. Your application
+can retrieve the values from the scanner to verify that it was set as 
+expected.<p>
+
+To reset a value to the default value, use the <b>ResetCapability method</b>
+This method requires a single argument of the capability identifier.<p>
+<PRE>
+>>> ss.ResetCapabilityCurrent(twain.ICAP_IMAGEFILEFORMAT)
+</PRE><p>
+
+The twain systems supports restricting a capability, i.e. if your application
+only support 8bit images, don't allow the user to scan 24bit iamges. This 
+functionality is not currently available in the twain module.<p>
+
+<h2>twexplore.py</h2>
+
+The demonstration program <em>twexplore.py</em> allows you to quickly view the
+capabilities of your Source. The main screen shows a grid with the 
+capability names, their values and their current values. If you double-click
+on an item, you are given a dialog, with which you can change the capability.
+The grid is refreshed each time a capability is change, so you can see the
+impact of the change, i.e. changing units changes the values for dimensions.<p>
+
+<h2>Twain Types</h2>
+
+Parameters passed to the SetCapability must be consistent with the values
+expected by the TWAIN API, see chapter 9 of the specification. From the
+python perspective, the parameters are passed in the following format:<p>
+
+<table summary="Twain Types to Python Mappings" border=1>
+<tr>
+<td>TWTY_INT*, TWTY_UINT*, TWTY_BOOL</td>
+<td>All of these values are passed as a Python integer or Python long integer.</td>
+</tr>
+<tr>
+<td>TWTY_FIX32</td>
+<td>These values are passed as a Python floating point number.</td>
+</tr>
+<tr>
+<td>TWTY_FRAME</td>
+<td>These values are passed a Python tuple (Left, Top, Right, Bottom).</td>
+</tr>
+<tr>
+<td>TWTY_STR*</td>
+<td>These values are passed a Python strings.</td>
+</tr>
+</table>
+
+<h2>Wierd Stuff</h2>
+
+The return value from GetCapability() can be in the format of a 'RANGE' or
+an 'ARRAY'.<p>
+
+A <b>RANGE</b> is converted to a python dictionary type. Ranges define
+values which are flexible within a specific range. There is not type
+information returned with a range. It contains 5 values,
+'DefaultValue', 'MaxValue', 'MinValue', 'CurrentValue' and 'StepSize'. 
+ICAP_XRESOLUTION is an example of a capability which is returned as an
+array.<p>
+<PRE>
+>>> ss.GetCapability(twain.ICAP_XRESOLUTION)
+{'StepSize': 1, 'DefaultValue': 150, 'CurrentValue': 150, 'MaxValue': 1600, 
+'MinValue': 12}
+>>>
+</PRE><p>
+
+An <b>ARRAY</b> is a value with no current or default information. It can be
+considered as a simple version of the enumerator. It is returned in a tuple,
+with the type. The CAP_SUPPORTEDCAPS is returned as an ARRAY.<p>
+<PRE>
+>>> ss.GetCapability(twain.CAP_SUPPORTEDCAPS)
+(4, [4101, 1, 4380, 4364, 4370, 257, 258, 4376, 4388, 4111, 4362, 4103, 4099, 0,
+ 40963, 64, 64, 0, 0, 0, 0, 0, 0, 0, 0])
+</PRE><p>
+
+The capability ICAP_SUPPORTEDCAPS should list the capabilities supported by
+the twain source. The demo program twexplore lists 'Supported Capabilities'
+in green.<p>
+
+
+<hr>
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="quickstarttk.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="transfer.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Guide</b></td>
+</tr></table>
+
+</body>
+</html>
+
+

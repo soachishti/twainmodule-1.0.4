@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>Installation</title>
+</head>
+<body>
+
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="intro.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="quickstart.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Introduction</b></td>
+</tr></table>
+<hr>
+
+<h1>Installation</h1>
+
+The 'twain' module is comprised of a single dll file, called <em>twain.pyd</em>.
+Download this file and place it in your python 'site-packages' directory. 
+The file may be named with a version number extension on the web-server. Rename
+the file to 'twain.pyd'.<p>
+
+<h2>Installing a Binary Distribution</h2>
+
+The binary distribution is available in a Zip file in the format
+twain_1.0b1-py_2.2.zip. twain_1.0b1 indicates that this is beta 1 of release 1
+of the twain module. py_2.2 indicates that this binary is built to run with
+python version 2.2.<p>
+
+Extract the zip file to a directory. This will create the following files:<p>
+<pre>
+		 twain.pyd  - the twain module executable
+		 demo       - demonstration programs directory
+		 twexplore  - the twexplore program directory
+		 docs       - the module documentation
+</pre><p>
+
+<b>For Python 2.2 or later</b><p>
+Copy the file 'twain.pyd' to your site-packages directory, i.e.<p>
+<pre>
+		 copy twain.pyd c:\python22\lib\site-packages
+</pre><p>
+
+<b>For Python 2.1.x</b><p>
+Copy the file 'twain.pyd' to your DLLs directory, i.e.<p>
+<pre>
+		 copy twain.pyd c:\python21\DLLs
+</pre><p>
+
+You need to have wxPython installed to run the twexplore python scripts.
+If you do not have wxPython installed, you can download a binary version of
+this program, see below.<p>
+
+<h2>Building from source</h2>
+
+<b>You need to have Microsoft Visual C++ to build the twain module.</b><p>
+
+The source can be downloaded from CVS on SourceForge, or can be extracted from
+the 'tarball' file, twainsrc_1.0b1.zip, where 1.0b1 refers to beta 1 of release
+1 of the module.
+
+Extract the source from the server, either a zipped file, or via CVS. Place the
+directory 'twainmodule' parallel to the 'Libs' directory in your python installation.
+<p>
+
+Download and install the TWAIN Toolkit from the 
+<a href=http://www.twain.org/download.htm>TWAIN website</a>. The header file
+twain.h is in the twain toolkit. If you do not install the TWAIN toolkit in
+the default location, you will have to change the twain module project 
+definition to set the include path to this file.<p>
+
+Change directory to the twainmodule/src directory.
+Load the project workspace into Microsoft Visual C++. Build the DLL and 
+place it in your python path, e.g. in the site-packages directory.<p>
+
+
+<h2>Twexplore Executable Installation</h2>
+
+The twexplore program is available in executable form. This version does
+not require Python to be installed on your PC. Download the file
+twexplore_1.0b1.zip. 1.0b1 indicates that this is beta 1 release 1 of the 
+executable and matches the source in twainsrc_1.0b1.zip.<p>
+
+Extract the file to a directory. You can run the program (twexplore.exe)
+from this directory.<p>
+
+<hr>
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="intro.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="quickstart.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Introduction</b></td>
+</tr></table>
+
+</body>
+</html>
+
+

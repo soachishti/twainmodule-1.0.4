@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>SourceManager Class</title>
+</head>
+<body>
+
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="twainif.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="ds.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Reference</b></td>
+</tr></table>
+<hr>
+
+<h1>Source Manager Object</h1>
+
+The source manager provides the communications interface to the TWAIN
+subsystem. It also provides the factory for creating a Source Object.<p>
+
+<h2>Constructor</h2>
+
+<b>SourceManager(HWND)</b><br><br>
+
+This function is used to create a source manager object. It has a single
+mandatory parameter and eleven optional named parameters. The parameters are
+as follows:
+
+<table summary="SourceManager Function Parameters" width=600 border=1>
+<tr>
+<td><b>Name</b></td>
+<td><b>Description</b></td>
+<td><b>Default Value</b></td>
+</tr><tr>
+<td>HWND</td>
+<td>A handle to the application window.</td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>MajorNum</td>
+<td>Application Version Number.</td>
+<td>1</td>
+</tr><tr>
+<td>MinorNum</td>
+<td>Application minor verson number (revision).</td>
+<td>0</td>
+</tr><tr>
+<td>Language</td>
+<td>User language (TWLG_* constant)</td>
+<td>TWLG_USA</td>
+</tr><tr>
+<td>Country</td>
+<td>User Country (TWCY_* constant)</td>
+<td>TWCY_USA</td>
+</tr><tr>
+<td>Info</td>
+<td>Information (string).</td>
+<td>TWAIN Python Interface 1.0.0.0  10/02/2002</td>
+</tr><tr>
+<td>ProductName</td>
+<td>Client product name (string)</td>
+<td>TWAIN Python Interface</td>
+</tr><tr>
+<td>ProtocolMajor</td>
+<td>Protocol Major version (TWON_PROTOCOLMAJOR).</td>
+<td>TWON_PROTOCOLMAJOR</td>
+</tr><tr>
+<td>ProtocolMinor</td>
+<td>Protocol Minor version (TWON_PROTOCOLMINOR).</td>
+<td>TWON_PROTOCOLMINOR</td>
+</tr><tr>
+<td>SupportedGroups</td>
+<td>Data Groups supported, i.e. images/audio.</td>
+<td>DG_IMAGE | DG_CONTROL</td>
+</tr><tr>
+<td>Manufacturer</td>
+<td>Sofware producers.</td>
+<td>Kevin Gill</td>
+</tr><tr>
+<td>ProductFamily</td>
+<td>Sofware information.</td>
+<td>TWAIN Python Interface</td>
+</tr>
+</table>
+<p>
+
+This method returns a single parameter, which is a SourceManger object. On failure
+it raises the following exceptions:
+<table summary="SourceManager constructor exceptions"  width=600 border=1>
+<tr>
+<td><b>Exception</b></td><td><b>Meaning</b></td
+</tr>
+<tr>
+<td>excSMLoadFileFailed</td><td>The SourceManger DLL TWAIN_32.DLL could not be loaded.
+This dll should be in your windows directory if TWAIN is installed. Check your software
+installation for your device.</td
+</tr>
+<tr>
+<td>excSMGetProcAddressFailed</td><td>Could not locate the entry point in the
+TWAIN_32.DLL. Check to see if you have the right DLL in your windows directory.</td
+</tr>
+<tr>
+<td>excSMOpenFailed</td><td>Could not open the connection to the SourceManager.
+A return code should be returned in the exc_info. Check this against the
+TWRC_* constants for detailed information on the error. </td>
+</tr>
+</table><p>
+
+<h2>Methods</h2>
+
+<b>SourceManager.DSM_Entry(datagroup, dataitem, messageid, message)</b><br><br>
+
+This method is used to make a call directly to the TWAIN manager DLL. You can 
+use it to implement any calls which have not been implemented in the
+DLL. Note that there is a separate implementation of this call in the Source
+object, for messages to the Data Source.<p>
+
+Be aware that there is a risk associated with using this method. Passing 
+incorrect data may result in memory corruption.<p>
+
+<table summary="DMS_Entry Function Parameters" width=600 border=1>
+<tr>
+<td><b>Name</b></td>
+<td><b>Description</b></td>
+<td><b>Default Value</b></td>
+</tr><tr>
+<td>datagroup</td>
+<td>Data Group identifier. One of the DG_* constants. </td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>dataitemid</td>
+<td>Data Item Type identifier. One of the DAT_* constants. </td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>messageid</td>
+<td>The command to be performed. One of the MSG_* constants. </td>
+<td><b>mandatory</b></td>
+</tr><tr>
+<td>message</td>
+<td>The data for the operation. This should be built up using the
+struct python module. In many of the operations, the result is returned
+in this buffer.</td>
+<td><b>mandatory</b></td>
+</tr><table><p>
+
+This method returns the TWAIN Source Manager return value as an integer.
+This value is one of the TWRC_* values.<p>
+
+<b>SourceManager.GetSourceList()</b><br><br>
+
+This method is used to return the list of the names of sources which are 
+available in the source manager. This method can be used to replace the
+standard OpenSource dialog with an application specific dialog.<p>
+
+The result is a list of strings.<p>
+
+<b>SourceManager.SetCallback(pfnCallback)</b><br><br>
+
+This method is used to set the callback handler. The callback handler is
+invoked when the TWAIN source signals our application. It can signal our
+application to indicate that there is data ready for us or that it wants to
+shutdown.<p>
+
+The expected events are:<br>
+<b>MSG_XFERREADY</b> (0x101) - the data source has data ready<br>
+<b>MSG_CLOSEDSREQ</b> (0x0102) - Request for Application. to close DS<br>
+<b>MSG_CLOSEDSOK</b> (0x0103) - Tell the Application. to save the state.<br>
+<b>MSG_DEVICEEVENT</b> (0X0104) - Event specific to Source<p>
+
+<table summary="SetCallback Function Parameters" width=600 border=1>
+<tr>
+<td><b>Name</b></td>
+<td><b>Description</b></td>
+<td><b>Default Value</b></td>
+</tr><tr>
+<td>pfnCallback</td>
+<td>The function to be invoked. The function should expect a single parameter,
+which is the event which caused it to be called. </td>
+<td><b>mandatory</b></td>
+</tr></table><p>
+
+<b>SourceManager.GetIdentity()</b><br><br>
+
+Returns a dictionary containing the configuration information for the 
+SourceManager. This is our configuration in the twain sub-system.<p>
+
+<b>SourceManager.destroy()</b><br><br>
+
+Disconnects from the TWAIN sub-system. This function is called automatically
+by the source manager destructor. It is provided as a separate function
+to give finer-grained control over the disconnection and dll unloading.<p>
+
+
+<hr>
+<table summary="TitleBar" cellpadding="0" cellspacing="2"><tr>
+<td><A HREF="twainif.html"><img align=center src="icons/previous.gif" BORDER=0 ALT="Previous"></A></td> 
+<td><A HREF="index.html"><img align=center src="icons/up.gif" BORDER=0 ALT="Up"></A></td>
+<td><A HREF="ds.html"><img align=center src="icons/next.gif" BORDER=0 ALT="Next"></A></td> 
+<td align="center" width="100%" bgcolor=#99ccff><b>Reference</b></td>
+</tr></table>
+
+
+</body>
+</html>
+
+
